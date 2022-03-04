@@ -22,7 +22,8 @@ app.listen(8080, function () {
 const config  = {
     host: 'localhost',
     user: 'root',
-    password: 'qaz6699wsx'
+    password: 'qaz6699wsx',
+    database: 'shop'
 };
 const con = mysql.createConnection(config);
 con.connect((err) => {
@@ -31,15 +32,27 @@ con.connect((err) => {
         return;
     }    
     else {
-        console.log('Database Connect Success!');  
+        console.log('Database Connect Success!');
     }
-
 })
 
-
-app.get('/show', function (req, res) {
-    mc.query('SELECT * FROM shop.products;', function (error, results, fields) {
+// 發送get http request (http://localhost:8080/show)
+app.get('/show', (req, res) => {
+    let sql = 'SELECT * FROM products;';
+    con.query(sql, function (error, results) {
         if (error) throw error;
         return res.send({ error: false, data: results, message: 'products list.' });
     });
 });
+
+app.post('/add', (req, res) => {
+    let sql = 'INSERT INTO products (pd_name, pd_category, pd_qty, pd_price) VALUES ?';
+    let values = [
+        ['果凍筆', '筆', '854', '39'],
+        ['15cm尺', '尺', '465', '15']
+    ]
+    con.query(sql, [values], (error, results) => {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'products list.' });
+    });
+})

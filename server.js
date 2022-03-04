@@ -46,12 +46,28 @@ app.get('/show', (req, res) => {
 });
 
 app.post('/add', (req, res) => {
-    let sql = 'INSERT INTO products (pd_name, pd_category, pd_qty, pd_price) VALUES ?';
+    let sql = 'INSERT INTO products (pd_name, pd_category, pd_qty, pd_price) ?';
     let values = [
         ['果凍筆', '筆', '854', '39'],
         ['15cm尺', '尺', '465', '15']
     ]
     con.query(sql, [values], (error, results) => {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'products list.' });
+    });
+})
+
+app.post('/update', (req, res) => {
+    let sql = "UPDATE products SET pd_name = '30cm尺' WHERE pd_id = '5' AND pd_name = '15cm尺'";
+    con.query(sql, (error, results) => {
+        if (error) throw error;
+        return res.send({ error: false, data: results, message: 'products list.' });
+    });
+})
+
+app.post('/delete', (req, res) => {
+    let sql = "DELETE FROM products WHERE pd_id = '4'";
+    con.query(sql, (error, results) => {
         if (error) throw error;
         return res.send({ error: false, data: results, message: 'products list.' });
     });
